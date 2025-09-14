@@ -220,6 +220,34 @@
         text-decoration: underline;
         color: #457b9d;
       }
+      button.loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      button.loading::after {
+        content: "";
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 14px;
+        height: 14px;
+        border: 2px solid white;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: translateY(-50%) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-50%) rotate(360deg);
+        }
+      }
     </style>
   </head>
   <body>
@@ -315,18 +343,31 @@
       // Download poster
       downloadBtn.addEventListener("click", () => {
         if (downloadBtn.disabled) return;
+
+        // Show loading state
+        downloadBtn.classList.add("loading");
+        downloadBtn.textContent = "Processing...";
+        downloadBtn.disabled = true;
+
         html2canvas(poster, {
           useCORS: true,
           scale: 3,
           backgroundColor: null,
           width: 280,
           height: 360,
-        }).then((canvas) => {
-          const link = document.createElement("a");
-          link.href = canvas.toDataURL("image/png");
-          link.download = "donation_poster.png";
-          link.click();
-        });
+        })
+          .then((canvas) => {
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "donation_poster.png";
+            link.click();
+          })
+          .finally(() => {
+            // Restore button state
+            downloadBtn.classList.remove("loading");
+            downloadBtn.textContent = "⬇️ Download Poster";
+            downloadBtn.disabled = false;
+          });
       });
 
       // Switch to Hindi

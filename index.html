@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Poster Generator</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        background: #f5f5f5;
+        padding: 20px;
+        color: #333;
+      }
+
+      h2 {
+        margin: 0 auto 10px;
+        font-size: 16px;
+        font-weight: 600;
+        width: 270px;
+        box-sizing: border-box;
+      }
+
+      /* Language toggle buttons */
+      .lang-toggle {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 0 auto 20px;
+        width: 270px;
+      }
+      .lang-toggle button {
+        flex: 1;
+        padding: 6px 0;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s ease;
+        color: white;
+      }
+      .lang-toggle .selected {
+        background: #1d3557; /* blue */
+      }
+      .lang-toggle .unselected {
+        background: #aaa; /* grey */
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        width: 100%;
+      }
+
+      input[type="file"],
+      input[type="text"],
+      button {
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        width: 270px; /* match poster width */
+        box-sizing: border-box;
+      }
+
+      button {
+        background: #e63946;
+        color: white;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0px 3px 8px rgba(230, 57, 70, 0.3);
+        transition: 0.2s ease;
+      }
+
+      button:hover {
+        background: #d62839;
+      }
+
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      #poster-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+
+      /* Poster fixed smaller size */
+      #poster {
+        position: relative;
+        width: 270px;
+        height: 360px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        background: white;
+      }
+
+      #poster-bg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      /* Photo box */
+      #photo-container {
+        position: absolute;
+        top: 90px;
+        left: 72px;
+        width: 120px;
+        height: 120px;
+        border-radius: 10%;
+        border: 2px solid white;
+        overflow: hidden;
+        z-index: 1;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #photo-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* User name */
+      #user-name {
+        position: absolute;
+        top: 220px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-size: 8px;
+        font-weight: 600;
+        color: white;
+        z-index: 2;
+        width: 90%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Description */
+      #user-desc {
+        position: absolute;
+        top: 234px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-size: 7px;
+        font-weight: 400;
+        color: white;
+        z-index: 2;
+        width: 90%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Footer section */
+      .footer {
+        margin: 25px auto 0;
+        width: 270px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .footer a {
+        display: block;
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+        transition: 0.2s ease;
+        box-sizing: border-box;
+      }
+      .footer a.help {
+        background: #e76f51;
+      }
+      .footer a.help:hover {
+        background: #d65a3c;
+      }
+      .footer p {
+        margin: 5px 0 0;
+        font-size: 12px;
+        color: #555;
+        font-weight: 500;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .footer a.profile {
+        font-size: 12px;
+        color: #1d3557;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .footer a.profile:hover {
+        text-decoration: underline;
+        color: #457b9d;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 id="posterHeading">Generate Hindi Poster</h2>
+
+    <!-- Language switch buttons -->
+    <div class="lang-toggle">
+      <button id="hindiBtn" class="selected">Hindi</button>
+      <button id="englishBtn" class="unselected">English</button>
+    </div>
+
+    <div class="controls">
+      <input type="file" id="photoInput" accept="image/*" />
+      <input
+        type="text"
+        id="nameInput"
+        placeholder="Enter your name"
+        maxlength="30"
+      />
+      <input
+        type="text"
+        id="descInput"
+        placeholder="Enter description"
+        maxlength="50"
+      />
+      <button id="downloadBtn" disabled>⬇️ Download Poster</button>
+    </div>
+
+    <div id="poster-wrapper">
+      <div id="poster">
+        <img
+          id="poster-bg"
+          src="poster-template-hindi.png"
+          alt="Poster Background"
+        />
+        <div id="photo-container"></div>
+        <div id="user-name"></div>
+        <div id="user-desc"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <a href="tel:+918209972644" class="help">🛠 Need Help? Contact</a>
+      <p>© Terapanth Yuvak Parishad Chittorgarh</p>
+      <a href="https://vatsaljain.netlify.app/" target="_blank" class="profile">
+        Developed by Vatsal Jain
+      </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+      const photoInput = document.getElementById("photoInput");
+      const photoContainer = document.getElementById("photo-container");
+      const userNameElement = document.getElementById("user-name");
+      const userDescElement = document.getElementById("user-desc");
+      const poster = document.getElementById("poster");
+      const posterBg = document.getElementById("poster-bg");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const heading = document.getElementById("posterHeading");
+
+      const hindiBtn = document.getElementById("hindiBtn");
+      const englishBtn = document.getElementById("englishBtn");
+
+      let currentTemplate = "hindi";
+
+      // Photo upload
+      photoInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const img = new Image();
+            img.onload = function () {
+              photoContainer.innerHTML = "";
+              photoContainer.appendChild(img);
+              downloadBtn.disabled = false;
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Name + description
+      document.getElementById("nameInput").addEventListener("input", (e) => {
+        userNameElement.textContent = e.target.value;
+      });
+      document.getElementById("descInput").addEventListener("input", (e) => {
+        userDescElement.textContent = e.target.value;
+      });
+
+      // Download poster
+      downloadBtn.addEventListener("click", () => {
+        if (downloadBtn.disabled) return;
+        html2canvas(poster, {
+          useCORS: true,
+          scale: 3,
+          backgroundColor: null,
+          width: 280,
+          height: 360,
+        }).then((canvas) => {
+          const link = document.createElement("a");
+          link.href = canvas.toDataURL("image/png");
+          link.download = "donation_poster.png";
+          link.click();
+        });
+      });
+
+      // Switch to Hindi
+      hindiBtn.addEventListener("click", () => {
+        posterBg.src = "poster-template-hindi.png";
+        currentTemplate = "hindi";
+        heading.textContent = "Generate Hindi Poster";
+        hindiBtn.classList.add("selected");
+        hindiBtn.classList.remove("unselected");
+        englishBtn.classList.remove("selected");
+        englishBtn.classList.add("unselected");
+      });
+
+      // Switch to English
+      englishBtn.addEventListener("click", () => {
+        posterBg.src = "poster-template-english.png";
+        currentTemplate = "english";
+        heading.textContent = "Generate English Poster";
+        englishBtn.classList.add("selected");
+        englishBtn.classList.remove("unselected");
+        hindiBtn.classList.remove("selected");
+        hindiBtn.classList.add("unselected");
+      });
+    </script>
+  </body>
+</html>

@@ -98,9 +98,9 @@
         position: relative;
         width: 270px;
         height: 360px;
-        border-radius: 10px;
-        border: 1px solid #ddd;
-        box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
+        /* border-radius: 10px;
+        border: 1px solid #ddd; */
+        /* box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15); */
         overflow: hidden;
         background: white;
       }
@@ -352,9 +352,7 @@
         html2canvas(poster, {
           useCORS: true,
           scale: 3,
-          backgroundColor: null,
-          width: 270,
-          height: 360,
+          backgroundColor: "white",
         })
           .then((canvas) => {
             const link = document.createElement("a");

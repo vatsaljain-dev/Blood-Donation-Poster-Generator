@@ -314,20 +314,31 @@
 
       // Download poster
       downloadBtn.addEventListener("click", () => {
-        if (downloadBtn.disabled) return;
-        html2canvas(poster, {
-          useCORS: true,
-          scale: 3,
-          backgroundColor: null,
-          width: 280,
-          height: 360,
-        }).then((canvas) => {
-          const link = document.createElement("a");
-          link.href = canvas.toDataURL("image/png");
-          link.download = "donation_poster.png";
-          link.click();
-        });
-      });
+  html2canvas(poster, {
+    useCORS: true,
+    scale: 3,
+    backgroundColor: null,
+    width: 280,
+    height: 360,
+  }).then((canvas) => {
+    const image = canvas.toDataURL("image/png");
+
+    // Detect if iOS device
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isIOS) {
+      // Open in new tab so user can long-press → "Save to Photos"
+      window.open(image, "_blank");
+    } else {
+      // Normal download for Android/Desktop
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = "donation_poster.png";
+      link.click();
+    }
+  });
+});
+
 
       // Switch to Hindi
       hindiBtn.addEventListener("click", () => {

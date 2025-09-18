@@ -281,7 +281,7 @@
       <div id="poster">
         <img
           id="poster-bg"
-          src="poster-template-hindi.png"
+          src="./assets/poster-template-hindi.png"
           alt="Poster Background"
         />
 
@@ -380,7 +380,7 @@
 
       // Switch to Hindi
       hindiBtn.addEventListener("click", () => {
-        posterBg.src = "poster-template-hindi.png";
+        posterBg.src = "./assets/poster-template-hindi.png";
         currentTemplate = "hindi";
         heading.textContent = "Generate Hindi Poster";
         hindiBtn.classList.add("selected");
@@ -391,7 +391,7 @@
 
       // Switch to English
       englishBtn.addEventListener("click", () => {
-        posterBg.src = "poster-template-english.png";
+        posterBg.src = "./assets/poster-template-english.png";
         currentTemplate = "english";
         heading.textContent = "Generate English Poster";
         englishBtn.classList.add("selected");

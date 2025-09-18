@@ -13,6 +13,15 @@ The posters can be generated in **Hindi or English** and downloaded instantly fo
 
 ---
 
+## 📸 Screenshot
+
+Here’s how the app looks in action:
+
+![Poster Generator Screenshot](./assets/screenshot.png)
+
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
@@ -56,15 +65,6 @@ npm start
 5. Click **Download Poster**.  
 
 Your customized poster will be generated and saved to your device.  
-
----
-
-## 📸 Screenshot
-
-Here’s how the app looks in action:
-
-![Poster Generator Screenshot](./assets/screenshot.png)
-
 
 ---
 
